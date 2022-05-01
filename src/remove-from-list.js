@@ -1,6 +1,6 @@
 const { NotImplementedError } = require("../extensions/index.js");
 
-// const { ListNode } = require('../extensions/list-node.js');
+const { ListNode } = require("../extensions/list-node.js");
 
 /**
  * Given a singly linked list of integers l and an integer k,
@@ -23,46 +23,66 @@ const { NotImplementedError } = require("../extensions/index.js");
  * }
  */
 
-class ListNode {
-  constructor(x) {
-    this.value = x;
-    this.next = null;
-  }
-}
-function removeKFromList(l, k) {
-  let current = l.value;
-  let prev = l.next;
-
-  while (current != null) {
-    if (current === k) {
-      if (prev == null) {
-        current = current.next;
-      } else {
-        current = prev.value;
-        prev = prev.next;
-      }
-      return current.value;
-    }
-    prev = current;
-    current = current.next;
-  }
-  return -1;
-}
-
-// function convertArrayToList(arr) {
-//   return arr.reverse().reduce((acc, cur) => {
-//     if (acc) {
-//       const node = new ListNode(cur);
-//       node.next = acc;
-//       return node;
-//     }
-
-//     return new ListNode(cur);
-//   }, null);
+//  class SinglyLinkedList{
+//   constructor(){
+//     this.head = null;
+//     this.tail = null;
+//     this.length = 0;
+//   }
 // }
-// const initial = convertArrayToList([3, 1, 2, 3, 4, 5]);
-// removeKFromList(initial, 3);
-// console.log(initial);
+
+function removeKFromList(l, k) {
+  function indexOf(l, k) {
+    let current = l;
+    let index = 0;
+    while (current) {
+      if (current.value === k) {
+        return index;
+      }
+      current = current.next;
+      index++;
+    }
+    return -1;
+  }
+
+  function remove(l, k) {
+    l = removeAt(l, indexOf(l, k));
+    return l;
+  }
+
+  function removeAt(l, position) {
+    const length = getLength(l);
+    if (position < 0 || length <= position) {
+      return null;
+    }
+    if (l == null) return null;
+    let temp = l;
+    if (position == 0) {
+      l = temp.next;
+      return l;
+    }
+    for (i = 0; l != null && i < position - 1; i++) temp = temp.next;
+    let next = temp.next.next;
+    temp.next = next;
+    return l;
+  }
+
+  function getLength(l) {
+    let head = l;
+    let temp = head;
+    let count = 0;
+    while (temp != null) {
+      count++;
+      temp = temp.next;
+    }
+    return count;
+  }
+
+  while (indexOf(l, k) != -1) {
+    l = remove(l, k);
+  }
+  return l;
+}
 
 module.exports = {
   removeKFromList,
